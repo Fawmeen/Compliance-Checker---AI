@@ -11,7 +11,29 @@ export default function UploadPage() {
   const [policyName, setPolicyName] = useState("");
   const [region, setRegion] = useState("");
   const [customDomain, setCustomDomain] = useState("");
-
+  async function handleSubmit(){
+  if(!file || !domain) 
+    return ;
+  let formdata=new FormData();
+  formdata.append("file",file);
+  formdata.append("name",policyName);
+  if(domain==="IT"){
+    formdata.append("Category","IT");
+  }
+  else if(domain==="RETAIL"){
+    formdata.append("Category","Retail");
+  }
+  else if(domain==="CUSTOM"){
+    formdata.append("Category","Custom"); 
+}
+    const res=await fetch('/api/policy',{
+      method:'POST',
+      body:formdata
+    });
+    const data=await res.json();
+    console.log(data);
+    
+}
   const canSubmit =
     domain &&
     file &&
@@ -148,8 +170,7 @@ export default function UploadPage() {
         <button
           disabled={!canSubmit}
           onClick={() => {
-            console.log({ domain, file, policyName, region, customDomain });
-            alert("Ready for backend!");
+            handleSubmit();
           }}
           className={`w-full py-3 rounded-xl text-sm font-medium transition
             ${
